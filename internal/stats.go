@@ -2,6 +2,10 @@ package internal
 
 import "time"
 
+const (
+	CharsPerWord = 5.0
+)
+
 func CountCorrectChars(test *TypingTest) int {
 	if test == nil {
 		return 0
@@ -34,7 +38,7 @@ func CalculateWPM(test *TypingTest) float64 {
 	correctChars := CountCorrectChars(test)
 
 	minutes := duration.Minutes()
-	return (float64(correctChars) / 5.0) / minutes
+	return (float64(correctChars) / CharsPerWord) / minutes
 }
 
 func CalculateAccuracy(test *TypingTest) float64 {

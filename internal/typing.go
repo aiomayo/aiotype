@@ -1,12 +1,25 @@
 package internal
 
 import (
+	"errors"
 	"math/rand"
 	"strings"
 	"time"
 )
 
-var rng = rand.New(rand.NewSource(time.Now().UnixNano()))
+var (
+	ErrTestNil             = errors.New("test is nil")
+	ErrTestCompleted       = errors.New("test is already completed")
+	ErrInvalidConfig       = errors.New("invalid configuration")
+	ErrPositionOutOfBounds = errors.New("position out of bounds")
+)
+
+func DefaultGameConfig() GameConfig {
+	return GameConfig{
+		TestDuration: 10 * time.Second,
+		WordCount:    50,
+	}
+}
 
 var commonWords = []string{
 	"the", "be", "to", "of", "and", "a", "in", "that", "have", "i",
@@ -45,6 +58,12 @@ var commonWords = []string{
 }
 
 func NewTest(config GameConfig) *TypingTest {
+	if config.WordCount <= 0 || config.TestDuration <= 0 {
+		return nil
+	}
+
+	rng := rand.New(rand.NewSource(time.Now().UnixNano()))
+
 	words := make([]string, config.WordCount)
 	for i := 0; i < config.WordCount; i++ {
 		words[i] = commonWords[rng.Intn(len(commonWords))]
